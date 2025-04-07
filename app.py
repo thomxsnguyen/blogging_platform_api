@@ -35,6 +35,17 @@ class User(db.Model):
     def set_tags(self, tag_list):
       self.tags = json.dumps(tag_list)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "content": self.content,
+            "category": self.category,
+            "tags": json.loads(self.tags) if self.tags else [],
+            "createdAt": self.created_at.isoformat(),
+            "updatedAt": self.updated_at.isoformat()
+        }
+
 
 @app.route('/')
 def home():
@@ -66,6 +77,11 @@ def view_post():
   user = User.query.get(user_id)
   print(user)
   return {"title": user.title, "content": user.content, "category": user.category, "tags": user.tags, "createdAt":user.created_at, "updatedAt": user.updated_at}, 200
+
+@app.route('/view/all', methods=['GET'])
+def view_all():
+  users = [u.to_dict() for u in User.query.all()]
+  return {"users": users}, 200
 
 
 if __name__ == "__main__":
