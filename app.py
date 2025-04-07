@@ -51,7 +51,7 @@ class User(db.Model):
 def home():
   return render_template("index.html")
 
-@app.route('/create', methods=['POST'])
+@app.route('/posts', methods=['POST'])
 def create_post():
   data = request.json
   title = data.get('title')
@@ -83,6 +83,24 @@ def view_all():
   users = [u.to_dict() for u in User.query.all()]
   return {"users": users}, 200
 
+@app.route('/posts/<int:post_id>', methods=['PUT'])
+def update(post_id):
+  user = User.query.get(post_id)
+  data = request.json
+  
+  title = data.get('title')
+  content = data.get('content')
+  category = data.get('category')
+  tags = data.get('tags')
+
+  user.title = title
+  user.content = content
+  user.category = category
+  user.tags = tags
+
+  db.session.commit()
+
+  return {"status": "recieved"}, 200
 
 if __name__ == "__main__":
   with app.app_context():
