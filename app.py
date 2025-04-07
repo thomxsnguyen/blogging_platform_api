@@ -83,6 +83,15 @@ def view_all():
   users = [u.to_dict() for u in User.query.all()]
   return {"users": users}, 200
 
+@app.route('/view/<string:term>', methods=['GET'])
+def search_by_filter(term):
+  users = User.queryall()
+  temp = []
+  for x in users:
+    if term in x.get("title") or term in x.get("content") or term in x.get("category"):
+      temp.append(x)
+  return {"users": temp}, 200
+
 @app.route('/posts/<int:post_id>', methods=['PUT'])
 def update(post_id):
   user = User.query.get(post_id)
