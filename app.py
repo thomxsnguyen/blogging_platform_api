@@ -85,11 +85,12 @@ def view_all():
 
 @app.route('/view/<string:term>', methods=['GET'])
 def search_by_filter(term):
-  users = User.queryall()
+  users = User.query.all()
   temp = []
   for x in users:
-    if term in x.get("title") or term in x.get("content") or term in x.get("category"):
+    if term in x.title or term in x.content or term in x.category:
       temp.append(x)
+  temp = [u.to_dict() for u in temp]
   return {"users": temp}, 200
 
 @app.route('/posts/<int:post_id>', methods=['PUT'])
