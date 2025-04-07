@@ -41,7 +41,7 @@ class User(db.Model):
             "title": self.title,
             "content": self.content,
             "category": self.category,
-            "tags": json.loads(self.tags) if self.tags else [],
+            "tags": json.loads(self.tags) if self.tags and self.tags.strip() else [],
             "createdAt": self.created_at.isoformat(),
             "updatedAt": self.updated_at.isoformat()
         }
@@ -100,6 +100,13 @@ def update(post_id):
 
   db.session.commit()
 
+  return {"status": "recieved"}, 200
+
+@app.route("/posts/<int:post_id>", methods=['DELETE'])
+def delete(post_id):
+  post = User.query.get(post_id)
+  db.session.delete(post)
+  db.session.commit()
   return {"status": "recieved"}, 200
 
 if __name__ == "__main__":
